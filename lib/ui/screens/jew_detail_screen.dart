@@ -1,25 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:jewellry_shop/data/_data.dart';
 import 'package:jewellry_shop/states/jew_state.dart';
-import 'package:jewellry_shop/states/shared_data.dart';
 import 'package:jewellry_shop/ui/widgets/counter_button.dart';
 import 'package:jewellry_shop/ui_kit/_ui_kit.dart';
 
-class JewDetail extends StatelessWidget {
+class JewDetailController extends GetxController {
+  final _state = Get.find<JewState>();
+  Jew get jew => _state.selectedJew();
+
+  void onIncreaseQuantityTap() {
+    _state.onIncreaseQuantityTap(jew);
+  }
+
+  void onDecreaseQuantityTap() {
+    _state.onDecreaseQuantityTap(jew);
+  }
+
+  void onAddToCartTap() {
+    _state.onAddToCartTap(jew);
+  }
+
+  void onAddRemoveFavoriteTap() {
+    _state.onAddRemoveFavoriteTap(jew);
+  }
+}
+
+class JewDetail extends GetView<JewDetailController> {
   const JewDetail({super.key});
-  SharedData get _state => JewState().state;
-  Jew get jew => _state.selectedJew;
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('JewDetail >> Перерисовка экрана деталей целиком');
     return Scaffold(
       appBar: _appBar(context),
-      body: Center(child: Image.asset(jew.image, scale: 2)),
-      floatingActionButton: _floatingActionButton(context),
+      body: Center(child: Image.asset(controller.jew.image, scale: 2)),
+      floatingActionButton: _floatingActionButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: _bottomAppBar(context),
     );
@@ -39,12 +56,12 @@ class JewDetail extends StatelessWidget {
     );
   }
 
-  Widget _floatingActionButton(BuildContext context) {
-    return Observer(builder: (_) => FloatingActionButton(
+  Widget _floatingActionButton() {
+    return Obx(() => FloatingActionButton(
       elevation: 0.0,
       backgroundColor: LightThemeColor.purple,
-      onPressed: () => _state.onAddRemoveFavoriteTap(jew),
-      child: jew.isFavorite ? const Icon(AppIcon.heart) : const Icon(AppIcon.outlinedHeart),
+      onPressed: controller.onAddRemoveFavoriteTap,
+      child: controller.jew.isFavorite ? const Icon(AppIcon.heart) : const Icon(AppIcon.outlinedHeart),
     ));
   }
 
@@ -67,7 +84,7 @@ class JewDetail extends StatelessWidget {
                           RatingBar.builder(
                             itemPadding: EdgeInsets.zero,
                             itemSize: 20,
-                            initialRating: jew.score,
+                            initialRating: controller.jew.score,
                             minRating: 1,
                             direction: Axis.horizontal,
                             allowHalfRating: true,
@@ -84,12 +101,12 @@ class JewDetail extends StatelessWidget {
                           ),
                           const SizedBox(width: 15),
                           Text(
-                            jew.score.toString(),
+                            controller.jew.score.toString(),
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(width: 5),
                           Text(
-                            "(${jew.voter})",
+                            "(${controller.jew.voter})",
                             style: Theme.of(context).textTheme.titleMedium,
                           )
                         ],
@@ -99,14 +116,14 @@ class JewDetail extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "\$${jew.price}",
+                            "\$${controller.jew.price}",
                             style: Theme.of(context).textTheme.displayLarge?.copyWith(color: LightThemeColor.purple),
                           ),
                           CounterButton(
-                            onIncrementTap: () => _state.onIncreaseQuantityTap(jew),
-                            onDecrementTap: () => _state.onDecreaseQuantityTap(jew),
-                            label: Observer(builder: (_) => Text(
-                              jew.quantity.toString(),
+                            onIncrementTap: controller.onIncreaseQuantityTap,
+                            onDecrementTap: controller.onDecreaseQuantityTap,
+                            label: Obx(() => Text(
+                              controller.jew.quantity.toString(),
                               style: Theme.of(context).textTheme.displayLarge,
                             ),),
                           )
@@ -119,7 +136,7 @@ class JewDetail extends StatelessWidget {
                       ),
                       const SizedBox(height: 15),
                       Text(
-                        jew.description,
+                        controller.jew.description,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 30),
@@ -129,7 +146,7 @@ class JewDetail extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 30),
                           child: ElevatedButton(
-                            onPressed: () => _state.onAddToCartTap(jew),
+                            onPressed: controller.onAddToCartTap,
                             child: const Text("Add to cart"),
                           ),
                         ),

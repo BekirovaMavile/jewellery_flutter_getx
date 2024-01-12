@@ -1,89 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:jewellry_shop/states/shared_data.dart';
 import '../data/_data.dart';
+import 'package:get/get.dart';
 import '../ui/_ui.dart';
 import 'package:jewellry_shop/data/models/jew.dart';
 
 class JewState {
-  JewState._();
-  static final _instance = JewState._();
-  factory JewState() => _instance;
-  late final SharedData state = SharedData();
+  // JewState._();
+  // static final _instance = JewState._();
+  // factory JewState() => _instance;
 
-  // GlobalKey<CartScreenState> cartKey = GlobalKey();
-  // GlobalKey<FavoriteScreenState> favoriteKey =
-  // GlobalKey();
 
   //Переменные
-  List<JewCategory> categories = AppData.categories;
-  List<Jew> jews = AppData.jewItems;
-  List<Jew> jewsByCategory = AppData.jewItems;
-  List<Jew> get cart => jews.where((element) => element.cart).toList();
-  List<Jew> get favorite => jews.where((element) => element.isFavorite).toList();
-  ValueNotifier<bool> isLight = ValueNotifier(true);
+  RxList<JewCategory> categories = AppData.categories.obs;
+  RxList<Jew> jews = AppData.jewItems.obs;
+  RxList<Jew> jewsByCategory = AppData.jewItems.obs;
+  RxList<Jew> get cart => <Jew>[].obs;
+  RxList<Jew> get favorite => <Jew>[].obs;
+  RxBool isLigth = true.obs;
+  Rx<Jew> selectedJew = AppData.jewItems[0].obs;
 
-  Future<void> onCategoryTap(JewCategory selectedCategory) async {
-    if (categories.contains(selectedCategory)) {
-      for (var category in categories) {
-        category.isSelected = (category == selectedCategory);
-      }
-      if (selectedCategory == categories.first) {
-        jewsByCategory = jews;
+  Future<void> onSetSelectedJew(Jew jew) async {
+    selectedJew.value = jew;
+  }
+
+  Future<void> onCategoryTap(JewCategory category) async {
+    categories.map((e) {
+      if (e.type == category.type) {
+        e.isSelected = true;
       } else {
-        jewsByCategory = jews.where((jew) => jew.type == selectedCategory.type).toList();
+        e.isSelected = false;
       }
+    }).toList();
+    categories.refresh();
+    if (category.type == JewType.all) {
+      jewsByCategory.value = jews;
+    } else {
+      jewsByCategory.value =
+          jews.where((e) => e.type == category.type).toList();
     }
   }
 
   Future<void> onIncreaseQuantityTap(Jew jew) async {
     jew.quantity++;
+    selectedJew.refresh();
+    cart.refresh();
   }
 
   Future<void> onDecreaseQuantityTap(Jew jew) async {
     if (jew.quantity == 1) return;
     jew.quantity--;
+    selectedJew.refresh();
+    cart.refresh();
   }
 
   Future<void> onAddToCartTap(Jew jew) async {
-    if (!jew.cart) {
-      jew.cart = true;
-    }
+    jew.cart = true;
+    cart.value = jews.where((p0) => p0.cart).toList();
   }
 
   Future<void> onRemoveFromCartTap(Jew jew) async {
     jew.cart = false;
+    jew.quantity = 1;
+    cart.value = jews.where((p0) => p0.cart).toList();
   }
 
   Future<void> onCheckOutTap() async {
-    for (var jew in jews) {
-      jew.cart = false;
+    for (var element in cart) {
+      element.cart = false;
+      element.quantity = 1;
     }
+    cart.value = jews.where((p0) => p0.cart).toList();
   }
 
-  Future<void> onAddRemoveFavoriteTap(Jew jew) async{
-    if (favorite.contains(jew)) {
-      favorite.remove(jew);
-    } else {
-      favorite.add(jew);
-    }
+  Future<void> onAddRemoveFavoriteTap(Jew jew) async {
     jew.isFavorite = !jew.isFavorite;
+    selectedJew.refresh();
+    favorite.value = jews.where((p0) => p0.isFavorite).toList();
   }
 
   void toggleTheme() {
-    isLight.value = !isLight.value;
+    isLigth.value = !isLigth.value;
   }
 
   String jewPrice(Jew jew) {
-    double price = 0;
-    price = jew.quantity * jew.price;
-    return price.toString();
+    return (jew.quantity * jew.price).toString();
   }
 
   double get subtotal {
-    double subtotal = 0;
-    for(var jew in cart) {
-      subtotal += jew.quantity * jew.price;
+    double amount = 0.0;
+    for (var element in cart) {
+      amount = amount + element.price * element.quantity;
     }
-    return subtotal;
+    return amount;
   }
 }

@@ -1,18 +1,31 @@
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart' hide Badge;
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jewellry_shop/data/models/jew.dart';
 import 'package:jewellry_shop/states/jew_state.dart';
-import 'package:jewellry_shop/states/shared_data.dart';
 import 'package:jewellry_shop/ui/extensions/app_extension.dart';
 import 'package:jewellry_shop/ui/widgets/jew_list_view.dart';
 import '../../data/_data.dart';
+import 'package:get/get.dart';
 import '../../ui_kit/_ui_kit.dart';
 
-class JewList extends StatelessWidget {
+class JewListController extends GetxController {
+  final _state = Get.find<JewState>();
+  List<JewCategory> get categories => _state.categories();
+  List<Jew> get jews => _state.jews();
+  List<Jew> get jewsByCategory => _state.jewsByCategory();
+
+  void onCategoryTap(JewCategory category) {
+    _state.onCategoryTap(category);
+  }
+
+  void toggleTheme() {
+    _state.toggleTheme();
+  }
+}
+
+class JewList extends GetView<JewListController> {
   const JewList({super.key});
-  SharedData get _state => JewState().state;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +51,7 @@ class JewList extends StatelessWidget {
                 style: Theme.of(context).textTheme.displaySmall,
               ),
               _categories(context),
-              Observer(builder: (_) => JewListView(jews: _state.jewsByCategory),),
+              Obx(() => JewListView(jews: controller.jewsByCategory)),
               Padding(
                 padding: const EdgeInsets.only(top: 25, bottom: 5),
                 child: Row(
@@ -58,7 +71,7 @@ class JewList extends StatelessWidget {
                   ],
                 ),
               ),
-              JewListView(jews: _state.jews, isReversed: true),
+              JewListView(jews: controller.jews, isReversed: true),
             ],
           ),
         ),
@@ -70,7 +83,7 @@ class JewList extends StatelessWidget {
     return AppBar(
       leading: IconButton(
         icon: const FaIcon(FontAwesomeIcons.dice),
-        onPressed: _state.onThemeToggle,
+        onPressed: controller.toggleTheme,
       ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -116,14 +129,13 @@ class JewList extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8.0),
       child: SizedBox(
         height: 40,
-        child: Observer(builder: (_) => ListView.separated(
+        child: Obx(() => ListView.separated(
             scrollDirection: Axis.horizontal,
             itemBuilder: (_, index) {
-              final categories = _state.categories;
-              final category = categories[index];
+              final category = controller.categories[index];
               return GestureDetector(
                 onTap: () {
-                  _state.onCategoryTap(category);
+                  controller.onCategoryTap(category);
                 },
                 child: Container(
                   width: 100,
@@ -144,7 +156,7 @@ class JewList extends StatelessWidget {
             separatorBuilder: (_, __) => Container(
               width: 15,
             ),
-            itemCount: _state.categories.length)),
+            itemCount: controller.categories.length)),
       ),
     );
   }

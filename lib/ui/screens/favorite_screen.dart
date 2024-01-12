@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get/get.dart';
 import 'package:jewellry_shop/data/_data.dart';
 import 'package:jewellry_shop/states/jew_state.dart';
-import 'package:jewellry_shop/states/shared_data.dart';
 import 'package:jewellry_shop/ui/widgets/empty_wrapper.dart';
 import 'package:jewellry_shop/ui_kit/_ui_kit.dart';
 
-class FavoriteScreen extends StatelessWidget {
-  FavoriteScreen({super.key});
-  SharedData get _state => JewState().state;
-  List<Jew> get favoriteItems => _state.favorite;
+class FavoriteScreenController extends GetxController {
+  final _state = Get.find<JewState>();
+  List<Jew> get favoriteItems => _state.favorite();
+}
+
+class FavoriteScreen extends GetView<FavoriteScreenController> {
+  const FavoriteScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Obx(() => Scaffold(
       appBar: _appBar(context),
-      body: Observer(builder: (_) => EmptyWrapper(
+      body: EmptyWrapper(
         type: EmptyWrapperType.favorite,
         title: "Empty favorite",
-        isEmpty: favoriteItems.isEmpty,
+        isEmpty: controller.favoriteItems.isEmpty,
         child: _favoriteListView(context),
-      ),),
-    );
+      ),
+    ));
   }
 
   PreferredSizeWidget _appBar(BuildContext context) {
@@ -36,9 +38,9 @@ class FavoriteScreen extends StatelessWidget {
   Widget _favoriteListView(BuildContext context) {
     return ListView.separated(
       padding: const EdgeInsets.all(30),
-      itemCount: favoriteItems.length,
+      itemCount: controller.favoriteItems.length,
       itemBuilder: (_, index) {
-        Jew jew = favoriteItems[index];
+        Jew jew = controller.favoriteItems[index];
         return Card(
           color: Theme.of(context).brightness == Brightness.light ? Colors.white : DarkThemeColor.primaryDark,
           shape: RoundedRectangleBorder(
