@@ -17,6 +17,8 @@ class MyAppController extends GetxController {
 
 class MyApp extends GetView<MyAppController> {
   const MyApp({super.key});
+
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Obx(() => GetMaterialApp(

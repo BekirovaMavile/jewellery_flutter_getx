@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/_data.dart';
 import 'package:get/get.dart';
 import '../ui/_ui.dart';
-import 'package:jewellry_shop/data/models/jew.dart';
+// import 'package:jewellry_shop/data/models/jew.dart';
 
 class JewState {
   // JewState._();
@@ -14,10 +14,11 @@ class JewState {
   RxList<JewCategory> categories = AppData.categories.obs;
   RxList<Jew> jews = AppData.jewItems.obs;
   RxList<Jew> jewsByCategory = AppData.jewItems.obs;
-  RxList<Jew> get cart => <Jew>[].obs;
-  RxList<Jew> get favorite => <Jew>[].obs;
+  RxList<Jew> cart = <Jew>[].obs;
+  RxList<Jew> favorite = <Jew>[].obs;
   RxBool isLigth = true.obs;
   Rx<Jew> selectedJew = AppData.jewItems[0].obs;
+
 
   Future<void> onSetSelectedJew(Jew jew) async {
     selectedJew.value = jew;

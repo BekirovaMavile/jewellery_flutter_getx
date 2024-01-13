@@ -32,6 +32,7 @@ class JewListView extends StatelessWidget {
                 width: 160,
                 decoration: BoxDecoration(
                   color: isDark ? DarkThemeColor.primaryDark : Colors.white,
+                  //color: Colors.red,
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
                 child: Padding(
@@ -39,7 +40,7 @@ class JewListView extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(jew.image, scale: 6, height: 90),
+                      Image.asset(jew.image, scale: 6),
                       Text(
                         "\$${jew.price}",
                         style: AppTextStyle.h3Style.copyWith(color: LightThemeColor.purple),
@@ -63,4 +64,3 @@ class JewListView extends StatelessWidget {
     );
   }
 }
-

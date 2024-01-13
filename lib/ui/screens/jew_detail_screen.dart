@@ -72,89 +72,92 @@ class JewDetail extends GetView<JewDetailController> {
           topRight: Radius.circular(30),
         ),
         child: BottomAppBar(
-            child: Container(
-              color: Theme.of(context).brightness == Brightness.dark ? DarkThemeColor.primaryLight : Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(30),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Row(
+            child: SizedBox(
+                height: 300,
+                child: Container(
+                  color: Theme.of(context).brightness == Brightness.dark ? DarkThemeColor.primaryDark : Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: SingleChildScrollView(
+                      child: Column(
                         children: [
-                          RatingBar.builder(
-                            itemPadding: EdgeInsets.zero,
-                            itemSize: 20,
-                            initialRating: controller.jew.score,
-                            minRating: 1,
-                            direction: Axis.horizontal,
-                            allowHalfRating: true,
-                            itemCount: 5,
-                            glow: false,
-                            ignoreGestures: true,
-                            itemBuilder: (_, __) => const FaIcon(
-                              FontAwesomeIcons.solidStar,
-                              color: LightThemeColor.yellow,
+                          Row(
+                            children: [
+                              RatingBar.builder(
+                                itemPadding: EdgeInsets.zero,
+                                itemSize: 20,
+                                initialRating: controller.jew.score,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                glow: false,
+                                ignoreGestures: true,
+                                itemBuilder: (_, __) => const FaIcon(
+                                  FontAwesomeIcons.solidStar,
+                                  color: LightThemeColor.yellow,
+                                ),
+                                onRatingUpdate: (rating) {
+                                  print('$rating');
+                                },
+                              ),
+                              const SizedBox(width: 15),
+                              Text(
+                                controller.jew.score.toString(),
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                "(${controller.jew.voter})",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "\$${controller.jew.price}",
+                                style: Theme.of(context).textTheme.displayLarge?.copyWith(color: LightThemeColor.purple),
+                              ),
+                              CounterButton(
+                                onIncrementTap: controller.onIncreaseQuantityTap,
+                                onDecrementTap: controller.onDecreaseQuantityTap,
+                                label: Obx(() => Text(
+                                  controller.jew.quantity.toString(),
+                                  style: Theme.of(context).textTheme.displayLarge,
+                                )),
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Text(
+                            "Description",
+                            style: Theme.of(context).textTheme.displayMedium,
+                          ),
+                          const SizedBox(height: 15),
+                          Text(
+                            controller.jew.description,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 30),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 45,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 30),
+                              child: ElevatedButton(
+                                onPressed: controller.onAddToCartTap,
+                                child: const Text("Add to cart"),
+                              ),
                             ),
-                            onRatingUpdate: (rating) {
-                              print('$rating');
-                            },
-                          ),
-                          const SizedBox(width: 15),
-                          Text(
-                            controller.jew.score.toString(),
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            "(${controller.jew.voter})",
-                            style: Theme.of(context).textTheme.titleMedium,
                           )
                         ],
                       ),
-                      const SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "\$${controller.jew.price}",
-                            style: Theme.of(context).textTheme.displayLarge?.copyWith(color: LightThemeColor.purple),
-                          ),
-                          CounterButton(
-                            onIncrementTap: controller.onIncreaseQuantityTap,
-                            onDecrementTap: controller.onDecreaseQuantityTap,
-                            label: Obx(() => Text(
-                              controller.jew.quantity.toString(),
-                              style: Theme.of(context).textTheme.displayLarge,
-                            ),),
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 15),
-                      Text(
-                        "Description",
-                        style: Theme.of(context).textTheme.displayMedium,
-                      ),
-                      const SizedBox(height: 15),
-                      Text(
-                        controller.jew.description,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 30),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 45,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: ElevatedButton(
-                            onPressed: controller.onAddToCartTap,
-                            child: const Text("Add to cart"),
-                          ),
-                        ),
-                      )
-                    ],
+                    ),
                   ),
                 ),
-              ),
             ),
         ),
     );

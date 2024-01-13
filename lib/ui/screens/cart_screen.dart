@@ -130,7 +130,7 @@ class CartScreen extends GetView<CartScreenController> {
                       ),
                     ),
                     Text(
-                      '\$${controller.jewPrice(jew)}',
+                      "\$${controller.jewPrice(jew)}",
                       style: AppTextStyle.h2Style.copyWith(color: LightThemeColor.purple),
                     )
                   ],

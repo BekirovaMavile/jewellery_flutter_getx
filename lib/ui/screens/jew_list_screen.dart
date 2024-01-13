@@ -28,56 +28,57 @@ class JewList extends GetView<JewListController> {
   const JewList({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _appBar(context),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Morning, Mavi",
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              Text(
-                "What jewellery do you want\nto buy today",
-                style: Theme.of(context).textTheme.displayLarge,
-              ),
-              _searchBar(),
-              Text(
-                "Available for you",
-                style: Theme.of(context).textTheme.displaySmall,
-              ),
-              _categories(context),
-              Obx(() => JewListView(jews: controller.jewsByCategory)),
-              Padding(
-                padding: const EdgeInsets.only(top: 25, bottom: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Best jewellery of the week",
-                      style: Theme.of(context).textTheme.displaySmall,
+  Widget build(BuildContext context) => Scaffold(
+    appBar: _appBar(context),
+    body: Padding(
+      padding: const EdgeInsets.all(20),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Morning, Mavi",
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+            Text(
+              "What jewellery do you want\nto buy today",
+              style: Theme.of(context).textTheme.displayLarge,
+            ),
+            _searchBar(),
+            Text(
+              "Available for you",
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+            _categories(context),
+            Obx(() => JewListView(jews: controller.jewsByCategory)),
+            Padding(
+              padding: const EdgeInsets.only(top: 25, bottom: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Best stickers of the week",
+                    style: Theme.of(context).textTheme.displaySmall,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Text(
+                      "See all",
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: LightThemeColor.purple),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Text(
-                        "See all",
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: LightThemeColor.purple),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              JewListView(jews: controller.jews, isReversed: true),
-            ],
-          ),
+            ),
+            JewListView(
+              jews: controller.jews,
+              isReversed: true,
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 
   PreferredSizeWidget _appBar(BuildContext context) {
     return AppBar(
